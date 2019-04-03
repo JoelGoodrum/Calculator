@@ -281,45 +281,90 @@ public class CalculatorProject extends Application {
 		return text;
 	}
 
-	//solve arithmatic
-	public String solution(ArrayList<String> arr){
+	//checkSyntax
+	public boolean checkSyntax(ArrayList<String> arr){
 
 		if(arr.size() > 2){
 
-			if(arr.contains("*")){
-				int i = arr.indexOf("*");
-				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-				arr.remove(i+1);
-				arr.remove(i-1);
-				solution(arr);
+			String firstVar = arr.get(0); //first val
+			String lastVar = arr.get(arr.size()-1); //last val
+
+			//if starts or end with opp return false
+			if(firstVar.equals("*") || firstVar.equals("/") ||
+			   firstVar.equals("+") || firstVar.equals("-") ||
+			   lastVar.equals("*") || lastVar.equals("/") ||
+			   lastVar.equals("+") || lastVar.equals("-")){
+				return false;
+			}
+			   
+
+			//if there are two opps in a row return false
+			for(int i = 0; i < arr.size() - 1; i++){
+
+				firstVar = arr.get(i);
+				String secVar = arr.get(i + 1);
+
+				if(firstVar.equals("*") || firstVar.equals("/") ||
+			   	   firstVar.equals("+") || firstVar.equals("-") &&
+				   secVar.equals("*") || secVar.equals("/") ||
+			   	   secVar.equals("+") || secVar.equals("-")){
+					return false;
+				}
 			}
 
-			else if(arr.contains("/")){
-				int i = arr.indexOf("/");
-				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-				arr.remove(i+1);
-				arr.remove(i-1);
-				solution(arr);
+		} else {
+			return false;
+		}
+		return true;
+
+	}
+
+	//solve arithmatic
+	public String solution(ArrayList<String> arr){
+		if(checkSyntax(arr) == true){ //compute
+			if(arr.size() > 2){
+
+				if(arr.contains("*")){
+					int i = arr.indexOf("*");
+					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+					arr.remove(i+1);
+					arr.remove(i-1);
+					solution(arr);
+				}
+
+				else if(arr.contains("/")){
+					int i = arr.indexOf("/");
+					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+					arr.remove(i+1);
+					arr.remove(i-1);
+					solution(arr);
+				}
+
+				else if(arr.contains("+")){
+					int i = arr.indexOf("+");
+					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+					arr.remove(i+1);
+					arr.remove(i-1);
+					solution(arr);
+				}
+
+				else if(arr.contains("-")){
+					int i = arr.indexOf("-");
+					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+					arr.remove(i+1);
+					arr.remove(i-1);
+					solution(arr);
+				}
+
+				else{
+					throw new NoSuchElementException();
+				}
 			}
 
-			else if(arr.contains("+")){
-				int i = arr.indexOf("+");
-				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-				arr.remove(i+1);
-				arr.remove(i-1);
-				solution(arr);
-			}
-
-			else if(arr.contains("-")){
-				int i = arr.indexOf("-");
-				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-				arr.remove(i+1);
-				arr.remove(i-1);
-				solution(arr);
-			}
-
-			else{
-				throw new NoSuchElementException();
+			else{ //show Error message
+				arr.removeAll(arr);
+				arr.add("Error");
+				return arr.get(0);
 			}
 		}
 
