@@ -206,7 +206,8 @@ public class CalculatorProject extends Application {
 		btnEqual.setId("equal_button");
 		btnEqual.getStylesheets().add("CalcStyle.css");
 		btnEqual.setOnAction(actionEvent -> {
-			System.out.print(varList);
+			System.out.println(varList);
+			System.out.println(checkSyntax(varList));
 			final String answer = solution(varList);
 	       	textField.setText(answer);
 	       	System.out.print(varList);
@@ -234,7 +235,10 @@ public class CalculatorProject extends Application {
 
 	//addNumbers properly to calcVar
 	public static void addVal(ArrayList<String> arr, String input){
-		
+		if(arr.size() > 0){
+			if(arr.get(0).equals("Error"))
+			arr.removeAll(arr);
+		}
 		
 		//if input is operator
 		if(input.equals("*") || input.equals("/") ||
@@ -295,6 +299,7 @@ public class CalculatorProject extends Application {
 			   lastVar.equals("*") || lastVar.equals("/") ||
 			   lastVar.equals("+") || lastVar.equals("-")){
 				return false;
+			
 			}
 			   
 
@@ -304,75 +309,75 @@ public class CalculatorProject extends Application {
 				firstVar = arr.get(i);
 				String secVar = arr.get(i + 1);
 
-				if(firstVar.equals("*") || firstVar.equals("/") ||
-			   	   firstVar.equals("+") || firstVar.equals("-") &&
-				   secVar.equals("*") || secVar.equals("/") ||
-			   	   secVar.equals("+") || secVar.equals("-")){
+				if( (firstVar.equals("*") || firstVar.equals("/") ||
+			   	   firstVar.equals("+") || firstVar.equals("-")) &&
+				   (secVar.equals("*") || secVar.equals("/") ||
+			   	   secVar.equals("+") || secVar.equals("-")) ){
 					return false;
 				}
 			}
 
-		} else {
+		} else{
 			return false;
 		}
+	
 		return true;
-
 	}
 
 	//solve arithmatic
 	public String solution(ArrayList<String> arr){
-		if(checkSyntax(arr) == true){ //compute
-			if(arr.size() > 2){
 
-				if(arr.contains("*")){
-					int i = arr.indexOf("*");
-					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-					arr.remove(i+1);
-					arr.remove(i-1);
-					solution(arr);
-				}
-
-				else if(arr.contains("/")){
-					int i = arr.indexOf("/");
-					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-					arr.remove(i+1);
-					arr.remove(i-1);
-					solution(arr);
-				}
-
-				else if(arr.contains("+")){
-					int i = arr.indexOf("+");
-					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-					arr.remove(i+1);
-					arr.remove(i-1);
-					solution(arr);
-				}
-
-				else if(arr.contains("-")){
-					int i = arr.indexOf("-");
-					arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
-					arr.remove(i+1);
-					arr.remove(i-1);
-					solution(arr);
-				}
-
-				else{
-					throw new NoSuchElementException();
-				}
-			}
-
-			else{ //show Error message
-				arr.removeAll(arr);
-				arr.add("Error");
-				return arr.get(0);
-			}
+		if(arr.size() == 1){
+			return arr.get(0);
 		}
 
+		else if(checkSyntax(arr) == true){ //compute
 
-		String result = arr.get(0);
-		arr.removeAll(arr);
-		arr.add(result);
-		return result;
+			if(arr.contains("*")){
+				int i = arr.indexOf("*");
+				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+				arr.remove(i+1);
+				arr.remove(i-1);
+				return solution(arr);
+			}
+
+			else if(arr.contains("/")){
+				int i = arr.indexOf("/");
+				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+				arr.remove(i+1);
+				arr.remove(i-1);
+				return solution(arr);
+			}
+
+			else if(arr.contains("+")){
+				int i = arr.indexOf("+");
+				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+				arr.remove(i+1);
+				arr.remove(i-1);
+				return solution(arr);
+			}
+
+			else if(arr.contains("-")){
+				int i = arr.indexOf("-");
+				arr.set(i, operations(arr.get(i-1), arr.get(i + 1), arr.get(i)));
+				arr.remove(i+1);
+				arr.remove(i-1);
+				return solution(arr);
+			}
+		
+			else{
+				throw new NoSuchElementException();
+			}
+			
+
+		}
+
+		//show Error message
+		else{	
+			arr.removeAll(arr);
+			arr.add("Error");			
+			return arr.get(0);
+		}
 		
 
 	}
